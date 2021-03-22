@@ -1,3 +1,11 @@
+/**
+ * Desarrollar el método radixSort, que ordena un array de enteros mediante dicho algoritmo de
+ * ordenamiento: “ordenamiento de raíz”.
+ *
+ * @author  Sofia Pigino (Grupo 2)
+ * @version 1.0
+ */
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
