@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,15 +9,35 @@ public class RadixSort {
         String[] strArray = stringUtil.toStringArray(arr);
         stringUtil.lNormalize(strArray, '0');
 
-        for (int i = 0; i < strArray.length; i++) {
-            System.out.println(strArray[i]);
+        Map<Character, ArrayList> map = new HashMap();
+
+        initMap(strArray, map);
+
+        Map<Character,ArrayList> newMap = recursive(map, 0, stringUtil.maxLength(strArray) - 2);
+
+        ArrayList finalArray = new ArrayList();
+
+        for(Map.Entry<Character,ArrayList> entry:newMap.entrySet())
+        {
+            ArrayList value = entry.getValue();
+            for (int i = 0; i < value.size(); i++) {
+                finalArray.add(value.get(i));
+            }
         }
 
-        Map<Character, ArrayList> map = new HashMap();
-        Map<Character, ArrayList> newMap = new HashMap<>();
+        String[] finalString = new String[strArray.length];
 
-        // newMap = recursive(map, strArray, 1);
+        for (int i = 0; i < finalArray.size(); i++) {
+            finalString[i] = (String) finalArray.get(i);
+        }
 
+        for (int i = 0; i < finalString.length; i++) {
+            arr[i] = Integer.valueOf(finalString[i]);
+        }
+    }
+
+    public static void initMap(String[] strArray, Map<Character, ArrayList> map) {
+        // Se inicializa el map
         // Recorre cada palabra del strArray original
         for (int i = 0; i < strArray.length; i++) {
 
@@ -36,62 +55,47 @@ public class RadixSort {
                 ArrayList oldContent = map.get(lastChar);
                 oldContent.add(strArray[i]);
                 map.put(lastChar, oldContent);
-
             }
         }
+    }
 
-        System.out.println(map.toString());
+    public static Map recursive(Map<Character,ArrayList> map, int count, int max){
+        Map<Character, ArrayList> newMap = new HashMap();
 
         for(Map.Entry<Character,ArrayList> entry:map.entrySet()) {
-            Character key = entry.getKey();
             ArrayList<String> value = entry.getValue();
+
             for (int i = 0; i < value.size(); i++) {
                 char[] charArray = value.get(i).toCharArray();
 
-                char lastChar = charArray[value.get(i).length() - 1];
-                System.out.println("Ultimo char: " + lastChar);
+                char lastChar = charArray[value.get(i).length() - 2 - count];
 
-
+                if (!newMap.containsKey(lastChar)) {
+                    String actual = value.get(i);
+                    ArrayList actualArray = new ArrayList();
+                    actualArray.add(actual);
+                    newMap.put(lastChar, actualArray);
+                } else {
+                    String actual = value.get(i);
+                    ArrayList anteriorArray = newMap.get(lastChar);
+                    anteriorArray.add(actual);
+                    newMap.put(lastChar, anteriorArray);
+                }
             }
         }
 
-    }
+        Map returnMap;
 
-    public static Map recursive(Map<Character, ArrayList> map, String[] strArray, int index){
-        Map<Character, ArrayList> newMap = new HashMap<>();
-        if (index > strArray[1].length()){
-            return map;
+        if (count == max) {
+            returnMap = new HashMap(newMap);
+            return returnMap;
+        } else {
+            count++;
+            returnMap = recursive(newMap, count, max);
         }
 
-        for (int i = 0; i < strArray.length; i++) {
+        return returnMap;
 
-            // Una palabra, array de caracteres
-            char[] charArray = strArray[i].toCharArray();
-
-            // Ultimo caracter del array
-            char lastChar = charArray[strArray[i].length() - index];
-            // char lastLastChar = charArray[strArray[i].length() - index - 1];
-            // System.out.print("Ultimo caracter: " + lastChar + "\n");
-
-            if (!map.containsKey(lastChar)) {
-                ArrayList content = new ArrayList();
-                content.add(strArray[i]);
-                map.put(lastChar, content);
-            } else {
-                ArrayList oldContent = map.get(lastChar);
-                oldContent.add(strArray[i]);
-                map.put(lastChar, oldContent);
-
-                // ArrayList removeContent = map.get(lastLastChar);
-                // System.out.println(removeContent.toString());
-                // removeContent.remove(strArray[i]);
-                // map.put(lastLastChar, removeContent);
-            }
-        }
-
-        newMap = recursive(map, strArray, index + 1);
-
-        return newMap;
     }
 
     public static void main(String[] args)
