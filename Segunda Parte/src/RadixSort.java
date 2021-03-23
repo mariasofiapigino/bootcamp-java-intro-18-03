@@ -13,15 +13,14 @@ import java.util.Map;
 public class RadixSort {
     public static void radixSort(int []arr)
     {
-        StringUtil stringUtil = new StringUtil();
-        String[] strArray = stringUtil.toStringArray(arr);
-        stringUtil.lNormalize(strArray, '0');
+        String[] strArray = StringUtil.toStringArray(arr);
+        StringUtil.lNormalize(strArray, '0');
 
         Map<Character, ArrayList> map = new HashMap();
 
         initMap(strArray, map);
 
-        Map<Character,ArrayList> newMap = recursive(map, 0, stringUtil.maxLength(strArray) - 2);
+        Map<Character,ArrayList> newMap = recursive(map, 0, StringUtil.maxLength(strArray) - 2);
 
         ArrayList finalArray = new ArrayList();
 
